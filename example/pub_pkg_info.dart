@@ -31,10 +31,10 @@ class VersionInfo {
   final String version;
 
   VersionInfo({
-    this.archiveUrl,
+    String archive_url,
     this.pubspec,
     this.version,
-  });
+  }) : archiveUrl = archive_url; // TODO: make this better
 }
 
 class Pubspec {
@@ -45,7 +45,7 @@ class Pubspec {
   final String homepage;
   final Map<String, String> environment;
   final String documentation;
-  final Map<String, dynamic> dev_dependencies;
+  final Map<String, dynamic> devDependencies;
 
   Pubspec({
     this.version,
@@ -55,6 +55,6 @@ class Pubspec {
     this.homepage,
     this.environment,
     this.documentation,
-    this.dev_dependencies,
-  });
+    Map<String, dynamic> dev_dependencies,
+  }) : devDependencies = dev_dependencies; // TODO: make this better
 }
