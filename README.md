@@ -52,3 +52,8 @@ main() {
   var users = jsonAutoDecode<List<User>>(userData); 
 }
 ```
+
+## Examples
+
+See the [examples](https://github.com/jakemac53/json_auto_decode/tree/master/example)
+directory for this package.
