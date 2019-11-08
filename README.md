@@ -10,6 +10,9 @@ From your local sdk checkout, do:
 ```
 git checkout -b json-auto-decode
 git pull https://github.com/jakemac53/sdk/ json-auto-decode
+
+./tools/build.py -mrelease --arch x64 create_sdk
+// Now use this sdk when running dart files
 ```
 
 ### Depend on this package via git
