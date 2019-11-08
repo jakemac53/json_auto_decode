@@ -1,0 +1,3 @@
+name: json_auto_decode
+environment:
+  sdk: <3.0.0
