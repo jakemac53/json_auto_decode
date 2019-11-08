@@ -46,7 +46,7 @@ class LazyList<T> extends ListBase<T> {
   int get length => _converted.length;
 
   @override
-  void set length(int newLength) {
+  set length(int newLength) {
     if (newLength < _original.length) _original.length = newLength;
     _converted.length = newLength;
   }
@@ -69,7 +69,7 @@ class LazyMap<V> extends MapBase<String, V> {
     }
     if (_original.containsKey(key)) {
       var original = _original.remove(key);
-      return _converted[key] = _converter(original);
+      return _converted[key as String] = _converter(original);
     }
     return null;
   }
