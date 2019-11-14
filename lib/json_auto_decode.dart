@@ -1,7 +1,31 @@
 import 'dart:collection';
+import 'dart:typed_data';
 
 T jsonAutoDecode<T>(String encoded) =>
     throw UnsupportedError('We needed a static type!');
+
+T jsonAutoDecodeFromBytes<T>(Uint8List bytes) =>
+    throw UnsupportedError('We needed a static type!');
+
+Iterable<T> convertIterable<S, T>(Iterable<S> json, T Function(S) converter,
+        {Iterable<T> defaultValue}) =>
+    json?.map((v) => converter(v)) ?? defaultValue;
+
+List<T> convertList<S, T>(Iterable<S> json, T Function(S) converter,
+    {List<T> defaultValue}) {
+  if (json == null) return null;
+  return [for (var item in json) converter(item)];
+}
+
+Map<K2, V2> convertMap<K1, V1, K2, V2>(Map<K1, V1> json,
+    K2 Function(K1) keyConverter, V2 Function(V1) valueConverter,
+    {Map<K2, V2> defaultValue}) {
+  if (json == null) return null;
+  return {
+    for (var entry in json.entries)
+      keyConverter(entry.key): valueConverter(entry.value)
+  };
+}
 
 /// Lazily converts one list into another list based on a conversion function.
 ///
@@ -52,12 +76,16 @@ class LazyList<T> extends ListBase<T> {
   }
 }
 
-/// Lazily converts one map into another map based on a conversion function.
+/// Lazily converts the values of one map into another map based on a
+/// conversion function.
+///
+/// This does not support converting the keys because that would have to be
+/// eager.
 ///
 /// Destructive on the original map for efficiency reasons.
-class LazyMap<V> extends MapBase<String, V> {
-  final Map<String, dynamic> _original;
-  final _converted = <String, V>{};
+class LazyMap<K, V> extends MapBase<K, V> {
+  final Map<K, dynamic> _original;
+  final _converted = <K, V>{};
   final V Function(dynamic) _converter;
 
   LazyMap(this._original, this._converter);
@@ -69,13 +97,13 @@ class LazyMap<V> extends MapBase<String, V> {
     }
     if (_original.containsKey(key)) {
       var original = _original.remove(key);
-      return _converted[key as String] = _converter(original);
+      return _converted[key as K] = _converter(original);
     }
     return null;
   }
 
   @override
-  void operator []=(String key, V value) {
+  void operator []=(K key, V value) {
     _converted[key] = value;
     _original.remove(key);
   }
@@ -87,7 +115,7 @@ class LazyMap<V> extends MapBase<String, V> {
   }
 
   @override
-  Iterable<String> get keys => _original.keys.followedBy(_converted.keys);
+  Iterable<K> get keys => _original.keys.followedBy(_converted.keys);
 
   @override
   V remove(Object key) {
